@@ -1,0 +1,11 @@
+{
+  "access_token": "ANHRH9AVXZNB2QHC",
+  "google_apiKey": "AIzaSyDBM5jToUF5MVRfSXOfeXeMCrfobRDEUDM",
+  "client_secret": "07904736fd9b13014de47cb371afae897e57e8f1249a397f956699fed66d787f97ad6ca7fbf849e2a5c3e911760f59d0ac29",
+  "baseUrl": "https://api.airqo.net",
+  "host": "127.0.0.1",
+  "port": "3306",
+  "database": "pmdb",
+  "username": "root",
+  "password": "hedcrosoft@#4"
+}

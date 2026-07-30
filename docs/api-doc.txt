@@ -1,0 +1,14 @@
+Location Manager Service stack
+1. corridor metada      : /api/v1/airQo/routes/corridor
+2. airQo map            : /api/v1/airQo/maps/show
+3. All grids            : /api/v1/airQo/grids/all
+4. K'la grids           : /api/v1/airQo/grids/kampala
+5. k'la sites           : /api/v1/airQo/sites/kampala
+6. k'la sites online    : /api/v1/airQo/sites/kampala/online
+7. Nearest Sensor       : /api/v1/airQo/routes/sensors/nearest
+8. Sensor Reading       : /api/v1/airQo/routes/sensors/pm25/measurements
+
+
+
+-- Traffic Congestion
+1. Traffic Congestion   : /api/v1/traffic/corridor/metrics
