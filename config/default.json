@@ -5,7 +5,7 @@
   "baseUrl": "https://api.airqo.net",
   "host": "127.0.0.1",
   "port": "3306",
-  "database": "pmdb",
-  "username": "root",
+  "database": "",
+  "username": "",
   "password": ""
 }

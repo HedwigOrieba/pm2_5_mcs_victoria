@@ -17759,6 +17759,20 @@
     "site": "Kyambogo University"
   },
   {
+    "hour": "2026-07-30T07:00:00.000Z",
+    "pm25": null,
+    "temperature": 28.01,
+    "humidity": 63.05,
+    "site": "Kyambogo University"
+  },
+  {
+    "hour": "2026-07-30T08:00:00.000Z",
+    "pm25": null,
+    "temperature": 29.28,
+    "humidity": 56.77,
+    "site": "Kyambogo University"
+  },
+  {
     "hour": "2026-07-30T09:00:00.000Z",
     "pm25": 15.88,
     "temperature": 31,
@@ -26663,6 +26677,76 @@
     "site": "Civic Centre, Kampala Central"
   },
   {
+    "hour": "2026-07-30T00:00:00.000Z",
+    "pm25": null,
+    "temperature": 20.95,
+    "humidity": 81.66,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T01:00:00.000Z",
+    "pm25": null,
+    "temperature": 20.47,
+    "humidity": 84.19,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T02:00:00.000Z",
+    "pm25": null,
+    "temperature": 20.09,
+    "humidity": 84.81,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T03:00:00.000Z",
+    "pm25": null,
+    "temperature": 20.31,
+    "humidity": 83.49,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T04:00:00.000Z",
+    "pm25": null,
+    "temperature": 21.18,
+    "humidity": 82.7,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T05:00:00.000Z",
+    "pm25": null,
+    "temperature": 21.76,
+    "humidity": 82.02,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T06:00:00.000Z",
+    "pm25": null,
+    "temperature": 23.53,
+    "humidity": 77.39,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T07:00:00.000Z",
+    "pm25": null,
+    "temperature": 26.57,
+    "humidity": 65.09,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T08:00:00.000Z",
+    "pm25": null,
+    "temperature": 28.66,
+    "humidity": 56.79,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
+    "hour": "2026-07-30T09:00:00.000Z",
+    "pm25": null,
+    "temperature": 29.42,
+    "humidity": 54.59,
+    "site": "Civic Centre, Kampala Central"
+  },
+  {
     "hour": "2026-07-01T00:00:00.000Z",
     "pm25": 66.26,
     "temperature": 21.55,
@@ -31091,6 +31175,76 @@
     "pm25": 131.19,
     "temperature": 19.41,
     "humidity": 79.68,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T00:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T01:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T02:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T03:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T04:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T05:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T06:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T07:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T08:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
+    "site": "Kireka, Kira Municipality"
+  },
+  {
+    "hour": "2026-07-30T09:00:00.000Z",
+    "pm25": null,
+    "temperature": 0,
+    "humidity": 0,
     "site": "Kireka, Kira Municipality"
   }
 ]

@@ -131,8 +131,9 @@ router.get("/data/clean-merged", (req, res) => {
   res.send(cleaned);
 });
 
-// standardise airqo data takes the aggregated airqo data: /api/v1/traffic/data/airqo/standardise
-router.get("/data/airqo/standardise", (req, res) => {
+// F:standardise airqo data takes the aggregated airqo data: /api/v1/traffic/data/airqo/standardise
+// final shape: {hour, pm25, temperature, humidity, site}
+router.get("/data/airqo/standardise", async (req, res) => {
   const inputFile = path.join(
     __dirname,
     "../data",
@@ -140,18 +141,41 @@ router.get("/data/airqo/standardise", (req, res) => {
   );
   const outputFile = path.join(__dirname, "../data", "standardised_airqo.json");
 
-  const standardised = CongestionManager.standardiseAirQoDataset(inputFile);
+  // AirQo machine learning ready dataset.
+  const standardised =
+    await CongestionManager.standardiseAirQoDataset(inputFile);
   fs.writeFileSync(outputFile, JSON.stringify(standardised, null, 2));
   res.send(standardised);
 });
-/* cron job to execute the collection every 15 mins:  */
-cron.schedule("*/1 * * * *", async () => {
-  try {
-    const result = await CongestionManager.registerTrafficObservationRecord();
-    console.log("Observation Saved:", result);
-  } catch (ex) {
-    console.log("error saving observation:", err);
-  }
+
+//"traffic_observations.json",
+//aggregated_measurements_july_2026.json
+router.get("/practice/affirm", async (req, res) => {
+  let pathToTrafficObservations = path.join(
+    __dirname,
+    "../data",
+    "traffic_observations.json",
+  );
+
+  const result = fs.readFileSync(pathToTrafficObservations, "utf8");
+  const rst = JSON.parse(result);
+  console.log(rst);
+  //const trafficArray = JSON.parse(result);
+  //const total_records = trafficArray.length;
+  //console.log(rst.data.length);
+  //const hourlyBucket = CongestionManager.groupByHour(trafficArray);
+  //const hourToRecordPair = Object.entries(hourlyBucket);
+  res.send("hourToRecordPair");
 });
+
+/* cron job to execute the collection every 15 mins:  */
+// cron.schedule("*/1 * * * *", async () => {
+//   try {
+//     const result = await CongestionManager.registerTrafficObservationRecord();
+//     console.log("Observation Saved:", result);
+//   } catch (ex) {
+//     console.log("error saving observation:", err);
+//   }
+// });
 
 module.exports = router;

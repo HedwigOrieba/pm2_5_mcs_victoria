@@ -8,6 +8,7 @@ const fs = require("fs");
 const config = require("config");
 const path = require("path");
 const mysql = require("mysql2/promise");
+const { error } = require("console");
 
 class TrafficCongestionManager {
   constructor() {
@@ -320,27 +321,20 @@ class TrafficCongestionManager {
   /** === * Building the traffic converter engine * === **/
 
   /* create an rounded hourly bucket */
-  roundToHourUTC(date) {
-    return new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        date.getUTCHours(),
-      ),
-    );
-  }
+  //   roundToHourUTC(date) {
+  //     return new Date(
+  //       Date.UTC(
+  //         date.getUTCFullYear(),
+  //         date.getUTCMonth(),
+  //         date.getUTCDate(),
+  //         date.getUTCHours(),
+  //       ),
+  //     );
+  //   }
 
-  /* Standardising a record date */
-  standardizeAndRound(dateString) {
-    const parsedDate = new Date(dateString); // local to UTC
-    const standardized = parsedDate.toISOString(); // exact UTC
-    const roundedHourlyBucket = this.roundToHourUTC(parsedDate).toISOString(); // hourly bucket
-    return { standardized, roundedHourlyBucket };
-  }
-
-  // Sumarize Records
+  // Sumarizing my traffic readings.
   summarizeTrafficGroup(records) {
+    // if there are no readings for that hour, set summary to null
     if (!records || records.length === 0) return null;
 
     // Mean speed (distance/duration per record)
@@ -364,6 +358,7 @@ class TrafficCongestionManager {
     let maxTPI = -Infinity,
       maxTPIId = null;
 
+    // identify which record had the highest and lowest tpi
     records.forEach((r) => {
       if (r.traffic_performance_index < minTPI) {
         minTPI = r.traffic_performance_index;
@@ -387,11 +382,14 @@ class TrafficCongestionManager {
     };
   }
 
-  // Group records with the same hour
+  // Group records with the same hour.
+  // Takes all traffic_observations.json, which is an array called records.
+  // sample saved as: groupedByHour.json
   groupByHour(records) {
     const grouped = {}; // this is an object (dictionary)
 
     records.forEach((r) => {
+      // create an internal js object in microseconds.
       const date = new Date(r.observed_at);
 
       // Round down to the hour in UTC
@@ -416,9 +414,11 @@ class TrafficCongestionManager {
     return grouped;
   }
 
-  // summarize by hour
+  // summarize by hour, uses: groupByHour(), summarizeTrafficGroup()
   summarizeByHour(records) {
+    // an object in which each key is an hourly bucket.
     const grouped = this.groupByHour(records);
+
     return Object.entries(grouped).map(([hour, groupRecords]) => {
       return {
         hour,
@@ -427,6 +427,7 @@ class TrafficCongestionManager {
     });
   }
 
+  //=============
   // merge airQo dataset readings to the returned summary dataset
   //   mergeTrafficAndAirQo(trafficSummary, airQoData) {
   //     // Build quick lookup maps for efficiency
@@ -467,21 +468,26 @@ class TrafficCongestionManager {
   //       };
   //     });
   //   }
-
+  // takes trafficSummary info and airQo data july data.
   mergeTrafficAndAirQo(trafficSummary, airQoData) {
+    // yyyy-mm-ddTHH:mm:ss -> {traffic summary record}
     const trafficMap = new Map(trafficSummary.map((t) => [t.hour, t.summary]));
 
-    // Round AirQo datetime to hourly bucket
+    // Round AirQo datetime to hourly bucket without a space btn date & time.
     const roundToHourUTC = (dateString) => {
       const d = new Date(dateString);
       d.setMinutes(0, 0, 0);
       return d.toISOString();
     };
 
+    // Map each airQo timestamp to entire AirQo Record
+    // yyyy-mm-ddTHH:mm:ss -> {AirQo Record}
     const airqoMap = new Map(
       airQoData.map((a) => [roundToHourUTC(a.datetime), a]),
     );
 
+    // Get a unique set of timestamps from both datasets & sort them
+    // a unique set of [timestamps in trafficSummary + timestamps in AirQoData]
     const allHours = Array.from(
       new Set([
         ...trafficSummary.map((t) => t.hour),
@@ -489,6 +495,8 @@ class TrafficCongestionManager {
       ]),
     ).sort();
 
+    // for each of the unique timestamps, this includes also airqo timestamps where there is
+    // no corresponding traffic summary record which will be set to null.
     return allHours.map((hourKey) => {
       const traffic = trafficMap.get(hourKey);
       const airqo = airqoMap.get(hourKey);
@@ -511,7 +519,7 @@ class TrafficCongestionManager {
     });
   }
 
-  // clean the merged script
+  // clean the merged script...nope..
   cleanData() {
     const mergedFile = path.join(__dirname, "../data", "merged_record.json");
     const rawData = fs.readFileSync(mergedFile, "utf8");
@@ -543,42 +551,45 @@ class TrafficCongestionManager {
       });
   }
 
-  // standardise data
-  standardiseAirQoDataset(filePath) {
-    const rawData = fs.readFileSync(filePath, "utf8");
-    const records = JSON.parse(rawData);
+  // Okay:: Standardise AirQo Data: {hour, pm25, temperature, humidity, site}
+  async standardiseAirQoDataset(airqoFilePath) {
+    // Load airQo api data
+    const data = new Promise((resolve, reject) => {
+      const rawAirQoJsonData = fs.readFile(
+        airqoFilePath,
+        "utf8",
+        (error, data) => {
+          if (error) reject("error encountered!!!");
+          resolve(JSON.parse(data));
+        },
+      );
+    });
 
-    // Round timestamp down to the hour in UTC
+    // pick all data from te returned promise.
+    const airqoJsData = await data; // js object representing airqo.
+
+    // Helper: preserves the date but removes the space between the date & timestamp.
     const roundToHourUTC = (dateString) => {
       const d = new Date(dateString);
-      d.setMinutes(0, 0, 0);
-      return d.toISOString();
+      d.setMinutes(0, 0, 0); // reset the mins, secs, ms of the date object to zero.
+      return d.toISOString(); // return the ISO 8601 UTC string.
     };
 
-    // Helper to safely convert numbers
+    // Helper: safe number converter.
     const safeNumber = (val) =>
       typeof val === "number" ? Number(val.toFixed(2)) : null;
 
-    // Handle both {data:[...]} or plain array
-    const dataset = records.data || records;
+    const standardized = airqoJsData.data.map((reading) => ({
+      hour: roundToHourUTC(reading.datetime),
+      pm25: safeNumber(reading.pm2_5_calibrated_value),
+      temperature: safeNumber(reading.temperature),
+      humidity: safeNumber(reading.humidity),
+      site: reading.site_name ? reading.site_name.trim() : "unknown",
+    }));
 
-    const cleaned = dataset
-      .filter(
-        (d) =>
-          (d.pm25 ?? d.pm2_5_calibrated_value) !== null &&
-          (d.temperature ?? d.temp) !== null &&
-          (d.humidity ?? d.hum) !== null,
-      )
-      .map((d) => ({
-        hour: roundToHourUTC(d.hour || d.datetime),
-        pm25: safeNumber(d.pm25 ?? d.pm2_5_calibrated_value),
-        temperature: safeNumber(d.temperature ?? d.temp),
-        humidity: safeNumber(d.humidity ?? d.hum),
-        site:
-          d.site || d.site_name ? (d.site || d.site_name).trim() : "Unknown",
-      }));
+    console.log(standardized);
 
-    return cleaned;
+    return standardized;
   }
 } //end class
 module.exports = TrafficCongestionManager;
